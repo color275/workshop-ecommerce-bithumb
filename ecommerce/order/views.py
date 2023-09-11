@@ -50,6 +50,54 @@ from datetime import date
 import random
 # from .models import Product, Order
 
+def get_user_orders(user):
+    if user.username == 'AWS01':
+        OrderModel = Order01  
+    elif user.username == 'AWS02':
+        OrderModel = Order02  
+    elif user.username == 'AWS03':
+        OrderModel = Order03  
+    elif user.username == 'AWS04':
+        OrderModel = Order04  
+    elif user.username == 'AWS05':
+        OrderModel = Order05  
+    elif user.username == 'AWS06':
+        OrderModel = Order06  
+    elif user.username == 'AWS07':
+        OrderModel = Order07  
+    elif user.username == 'AWS08':
+        OrderModel = Order08  
+    elif user.username == 'AWS09':
+        OrderModel = Order09  
+    elif user.username == 'AWS10':
+        OrderModel = Order10  
+    elif user.username == 'AWS11':
+        OrderModel = Order11  
+    elif user.username == 'AWS12':
+        OrderModel = Order12  
+    elif user.username == 'AWS13':
+        OrderModel = Order13  
+    elif user.username == 'AWS14':
+        OrderModel = Order14  
+    elif user.username == 'AWS15':
+        OrderModel = Order15  
+    elif user.username == 'AWS16':
+        OrderModel = Order16  
+    elif user.username == 'AWS17':
+        OrderModel = Order17  
+    elif user.username == 'AWS18':
+        OrderModel = Order18  
+    elif user.username == 'AWS19':
+        OrderModel = Order19  
+    elif user.username == 'AWS20':
+        OrderModel = Order20  
+    else:
+        # 기본값으로 Order 모델을 사용하거나 다른 처리를 수행할 수 있습니다.
+        OrderModel = Order
+
+    return OrderModel
+
+
 def product_order(request, product_id):
     product = get_object_or_404(Product, pk=product_id)
     
@@ -64,9 +112,11 @@ def product_order(request, product_id):
         # retrieve user information from the request or session
         user = request.user
 
+        OrderModel = get_user_orders(request.user)
+
         try:
             # create a new order object and save to the database
-            order = Order.objects.create(
+            order = OrderModel.objects.create(
                 cust_id=user,
                 prd_id=product,
                 promo_id=promo_id,
@@ -84,7 +134,10 @@ def product_order(request, product_id):
 
 @login_required
 def order_list(request):
-    orders = Order.objects.select_related('cust_id', 'prd_id').order_by('-last_update_time')[:50]
+
+    OrderModel = get_user_orders(request.user)
+    
+    orders = OrderModel.objects.select_related('cust_id', 'prd_id').order_by('-last_update_time')[:50]
     total_order_price = orders.aggregate(Sum('order_price'))['order_price__sum'] or 0
     context = {
                 'orders': orders, 
